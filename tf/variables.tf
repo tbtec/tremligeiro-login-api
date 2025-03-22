@@ -1,10 +1,3 @@
-variable "lambda_name" {
-  type        = string
-  description = "The name of the lambda function"
-  default = "tremligeiro-login"
-}
-
-
 variable "tags" {
   type        = map(string)
   description = "The default tags to use for AWS resources"

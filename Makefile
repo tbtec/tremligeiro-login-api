@@ -11,9 +11,6 @@ pre-build:
 build:
 	go build -o bin/${BINARY_NAME} -ldflags="-s -w" -tags appsec cmd/main.go
 
-sam-init:
-	sam init
-
 sam-build:
 	sam build
 
@@ -26,7 +23,7 @@ tf-init:
 
 tf-plan:
 	@cd tf \
-		&& terraform plan -var-file=config.tfvars
+		&& terraform plan 
 
 tf-delete:
 	@cd tf \
@@ -41,10 +38,12 @@ tf-destroy:
 	@cd tf \
 		&& terraform destroy -auto-approve
 
-build-binary:
+tf-build: tf-build-binary tf-zip-binary
+
+tf-build-binary:
 	@echo "Building..."
 	@env GOOS=linux GOARCH=arm64 go build -o tf/bootstrap cmd/main.go
 
-zip-binary:
-	@echo "Zipping..."
-	@zip tf/lambda.zip tf/bootstrap		
+tf-zip-binary:
+	@cd tf \
+		&& zip lambda.zip bootstrap
