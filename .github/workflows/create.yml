@@ -42,7 +42,7 @@ jobs:
       - name: Download lambda.zip
         uses: actions/download-artifact@v4
         with:
-          name: lambda
+          name: lambda.zip
           path: ./terraform
 
       - name: Setup Terraform
@@ -72,5 +72,4 @@ jobs:
         run: exit 1
 
       - name: Terraform Apply
-        #if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve
