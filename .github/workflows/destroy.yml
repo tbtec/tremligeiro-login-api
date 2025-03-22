@@ -1,11 +1,11 @@
-name: DestroyInfrastructure
+name: DestroyLambda
 
 on:
   workflow_dispatch:
   
 jobs:
   deploy:
-    name: Destroy Infrastructure
+    name: Destroy Lambda Infrastructure
     runs-on: ubuntu-latest
     defaults:
       run:
