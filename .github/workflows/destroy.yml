@@ -4,8 +4,34 @@ on:
   workflow_dispatch:
   
 jobs:
+  build:
+    name: Build and Package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ vars.GO_VERSION }}
+
+      - name: Build
+        run: env GOOS=linux GOARCH=arm64 go build -o bootstrap cmd/main.go
+
+      - name: Package
+        run: zip lambda.zip bootstrap
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lambda
+          path: lambda.zip
+          retention-days: 1    
+
   deploy:
     name: Destroy Lambda Infrastructure
+    needs:
+      - build
     runs-on: ubuntu-latest
     defaults:
       run:
