@@ -1,4 +1,4 @@
-name: CreateInfraestructure
+name: DeployLambda
 
 on:
   workflow_dispatch:
@@ -22,14 +22,16 @@ jobs:
         run: zip lambda.zip bootstrap
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: lambda
           path: lambda.zip
           retention-days: 1    
 
   deploy:
-    name: Create Infraestructure 
+    name: Create Lambda Infrastructure 
+    needs:
+      - build
     runs-on: ubuntu-latest
     defaults:
        run:
@@ -40,10 +42,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Download lambda.zip
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: lambda
-          path: ./terraform
+          path: ./tf
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -60,7 +62,7 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: terraform init
+        run: terraform init -backend-config="bucket=${{ vars.AWS_BUCKET_TERRAFORM }}"
 
       - name: Terraform Plan
         id: plan
@@ -72,5 +74,4 @@ jobs:
         run: exit 1
 
       - name: Terraform Apply
-        #if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve

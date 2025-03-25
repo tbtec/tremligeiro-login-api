@@ -1,11 +1,11 @@
-name: DestroyInfrastructure
+name: DestroyLambda
 
 on:
   workflow_dispatch:
   
 jobs:
   deploy:
-    name: Destroy Infrastructure
+    name: Destroy Lambda Infrastructure
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -30,7 +30,7 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: terraform init
+        run: terraform init -backend-config="bucket=${{ vars.AWS_BUCKET_TERRAFORM }}"
 
       - name: Terraform Plan
         id: plan
@@ -38,5 +38,4 @@ jobs:
         continue-on-error: true
 
       - name: Terraform Destroy
-        #if: github.ref == 'refs/heads/main'
         run: terraform destroy -auto-approve
