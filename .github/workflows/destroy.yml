@@ -15,6 +15,9 @@ jobs:
         with:
           go-version: ${{ vars.GO_VERSION }}
 
+      - name: Pre Build
+        run: go mod download
+
       - name: Build
         run: env GOOS=linux GOARCH=arm64 go build -o bootstrap cmd/main.go
 
